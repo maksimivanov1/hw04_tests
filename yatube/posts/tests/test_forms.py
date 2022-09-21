@@ -65,7 +65,7 @@ class PostFormTests(TestCase):
     #     )
     #     self.assertRedirects(response, reverse(
     #         'posts:post_detail', kwargs={'post_id': self.post.id}))
-       
+
     #     self.assertEqual(
     #         Post.objects.get(self.post.id).text, form_data['text']
     #     )

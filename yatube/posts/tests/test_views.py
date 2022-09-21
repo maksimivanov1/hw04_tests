@@ -1,4 +1,3 @@
-from django import forms
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -52,7 +51,8 @@ class PostTests(TestCase):
         self.assertEqual(first_object.text,
                          'Тестовая запись для создания 2 поста')
         self.assertEqual(first_object.author.username, 'max2')
-        self.assertEqual(first_object.group.title, 'Заголовок для 2 тестовой группы' )
+        self.assertEqual(first_object.group.title,
+                         'Заголовок для 2 тестовой группы')
 
     def test_group_pages_show_correct_context(self):
         """Шаблон группы"""
@@ -70,13 +70,14 @@ class PostTests(TestCase):
             reverse('posts:groups', kwargs={'slug': 'test-slug1'}))
         first_object = response.context["page_obj"][0]
         self.assertIsNotNone(first_object)
-        self.assertTrue(first_object.text, 'Тестовая запись для создания 2 поста')
+        self.assertTrue(first_object.text,
+                        'Тестовая запись для создания 2 поста')
 
     # def test_post_detail_context(self):
-    #!!!НЕКОТОРЫЕ ВЬЮХИ МОГУТ БЫТЬ НЕДОПИСАНЫ.НО МНЕ НУЖНО СДАТЬ ПРОЕКТЫ ДО 26
-    #СЕНТЯБРЯ ПОЭТОМУ Я КАК МОЖНО БЫСТРЕЕ ХОЧУ ПОЛУЧИТЬ ВСЕ ЗАМЕЧАНИЯ И 
-    # ОТПРАВИТЬ НА ПОВТОРНОЕ РЕВЬЮ ПОЛНОСТЬЮ ГОТОВЫЙ ПРОЕКТ ТАК КАК НА 
-    # СДАЧУ 6 СПРИНТА У МЕНЯ ОСТАНЕТСЯ 3 ДНЯ(ИНАЧЕ МЕНЯ ИСКЛЮЧАТ,АКАДЕМОВ 0)!!!
+    #!!!НЕКОТОРЫЕ ВЬЮХИ МОГУТ БЫТЬ НЕДОПИСАНЫ.НО МНЕ НУЖНО СДАТЬ ПРОЕКТЫ ДО 26#
+    # СЕНТЯБРЯ ПОЭТОМУ Я КАК МОЖНО БЫСТРЕЕ ХОЧУ ПОЛУЧИТЬ ВСЕ ЗАМЕЧАНИЯ И#
+    # ОТПРАВИТЬ НА ПОВТОРНОЕ РЕВЬЮ ПОЛНОСТЬЮ ГОТОВЫЙ ПРОЕКТ ТАК КАК НА#
+    # СДАЧУ 6 СПРИНТА У МЕНЯ ОСТАНЕТСЯ 3 ДНЯ(ИНАЧЕ МЕНЯ ИСКЛЮЧАТ,АКАДЕМОВ 0)!!!#
 
     def test_profile_correct_context(self):
         """Шаблон profile сформирован с правильным контекстом"""
@@ -88,7 +89,8 @@ class PostTests(TestCase):
         first_object = response.context["page_obj"][0]
         self.assertIsNotNone(first_object)
         self.assertEqual(response.context['author'].username, 'max2')
-        self.assertEqual(first_object.text, 'Тестовая запись для создания 2 поста')
+        self.assertEqual(first_object.text,
+                         'Тестовая запись для создания 2 поста')
 
 
 class PaginatorViewsTest(TestCase):
