@@ -1,10 +1,9 @@
-from unicodedata import name
 from django import forms
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
 from posts.models import Group, Post
-from posts.forms import PostForm
+
 
 User = get_user_model()
 
@@ -47,7 +46,6 @@ class PostTests(TestCase):
         self.assertEqual(post.author, self.post.author)
         self.assertEqual(post.text, self.post.text)
         self.assertEqual(post.group, self.post.group)
-        
 
     def test_pages_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон."""
@@ -79,9 +77,9 @@ class PostTests(TestCase):
 
     def test_group_pages_show_correct_context(self):
         """Шаблон groups сформирован с правильным контекстом."""
-        response = self.authorized_client.get(reverse
-                                              ('posts:groups',
-                                               kwargs={'slug': self.post2.group.slug}))
+        response = self.authorized_client.\
+            get(reverse('posts:groups',
+                        kwargs={'slug': self.post2.group.slug}))
         first_object = response.context["group"]
         self.assertIsNotNone(first_object)
         self.assertEqual(first_object.title, self.post2.group.title)
@@ -98,7 +96,8 @@ class PostTests(TestCase):
     def test_profile_correct_context(self):
         """Шаблон profile сформирован с правильным контекстом."""
         response = self.authorized_client.get(
-            reverse('posts:profile', kwargs={'username': self.post2.author.username}))
+            reverse('posts:profile', kwargs={'username':
+                                             self.post2.author.username}))
         page_obj = response.context.get('page_obj')
         self.assertIsNotNone(page_obj)
         self.assertGreater(len(page_obj), 0)
