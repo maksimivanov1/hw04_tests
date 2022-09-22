@@ -64,7 +64,7 @@ class PostFormTests(TestCase):
             reverse('posts:post_create'),
             data=form_data,
             follow=True
-            
+
         )
         post = Post.objects.first()
         self.assertRedirects(
@@ -92,7 +92,6 @@ class PostFormTests(TestCase):
             'Группа не совпадает!'
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        
 
     def test_edit_post(self):
         """Валидная форма изменяет запись в Post."""

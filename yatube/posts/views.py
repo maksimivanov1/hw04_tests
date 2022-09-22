@@ -60,7 +60,6 @@ def post_create(request):
             post.save()
             return redirect('posts:profile', request.user.username)
     return render(request, 'posts/create_post.html', context)
-    
 
 
 @login_required
