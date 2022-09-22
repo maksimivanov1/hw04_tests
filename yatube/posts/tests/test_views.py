@@ -173,7 +173,8 @@ class PaginatorViewsTest(TestCase):
         list_urls = {
             reverse("posts:index"): "index",
             reverse("posts:groups", kwargs={"slug": self.group.slug}): "group",
-            reverse("posts:profile", kwargs={"username": self.author.username}): "profile",
+            reverse("posts:profile",
+                    kwargs={"username": self.author.username}): "profile",
         }
         for tested_url in list_urls.keys():
             response = self.client.get(tested_url)
@@ -183,9 +184,11 @@ class PaginatorViewsTest(TestCase):
         """На вторую страницу выводитcя 3 поста."""
         list_urls = {
             reverse("posts:index") + "?page=2": "index",
-            reverse("posts:groups", kwargs={"slug": self.group.slug}) + "?page=2":
+            reverse("posts:groups",
+                    kwargs={"slug": self.group.slug}) + "?page=2":
             "group",
-            reverse("posts:profile", kwargs={"username": self.author.username}) + "?page=2":
+            reverse("posts:profile",
+                    kwargs={"username": self.author.username}) + "?page=2":
             "profile",
         }
         for tested_url in list_urls.keys():

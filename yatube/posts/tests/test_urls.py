@@ -51,9 +51,11 @@ class PostURLTests(TestCase):
         """URL-адрес использует соответствующий шаблон."""
         templates_url_names = {
             'posts/index.html': reverse('posts:index'),
-            'posts/group_list.html': reverse('posts:groups', kwargs={'slug': self.group.slug}),
+            'posts/group_list.html': reverse('posts:groups',
+                                             kwargs={'slug': self.group.slug}),
             'posts/create_post.html': reverse('posts:post_create'),
-            'posts/profile.html': reverse('posts:profile', kwargs={'username': self.user.username})
+            'posts/profile.html': reverse('posts:profile',
+                                          kwargs={'username': self.user.username})
 
         }
         for template, url in templates_url_names.items():
