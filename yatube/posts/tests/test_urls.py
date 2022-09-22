@@ -30,11 +30,11 @@ class PostURLTests(TestCase):
         )
 
     def test_pages(self):
-        """ Страницы доступные всем """
+        """URL-страниц доступные всем."""
         url_names = (
             '/',
-            '/group/test_slug/',
-            '/profile/Author/',
+            reverse('posts:groups', kwargs={'slug': self.group.slug}),
+            reverse('posts:profile', kwargs={'username': self.user.username}),
 
         )
         for adress in url_names:
@@ -42,7 +42,7 @@ class PostURLTests(TestCase):
                 response = self.guest_client.get(adress)
                 self.assertEqual(response.status_code, HTTPStatus.OK)
 
-    def test_new_for_authorized(self):
+    def test_create_for_authorized(self):
         """Страница /create доступна авторизованному пользователю."""
         response = self.authorized_client.get('/create/')
         self.assertEqual(response.status_code, HTTPStatus.OK)
@@ -50,10 +50,10 @@ class PostURLTests(TestCase):
     def test_urls_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон."""
         templates_url_names = {
-            'posts/index.html': '/',
-            'posts/group_list.html': '/group/test_slug/',
-            'posts/create_post.html': '/create/',
-            'posts/profile.html': '/profile/max888/',
+            'posts/index.html': reverse('posts:index'),
+            'posts/group_list.html': reverse('posts:groups', kwargs={'slug': self.group.slug}),
+            'posts/create_post.html': reverse('posts:post_create'),
+            'posts/profile.html': reverse('posts:profile', kwargs={'username': self.user.username})
 
         }
         for template, url in templates_url_names.items():
@@ -62,27 +62,61 @@ class PostURLTests(TestCase):
                 self.assertTemplateUsed(response, template)
 
     def test_unexisting_page_404(self):
+        """Несуществующая страница не найдена."""
         response = self.guest_client.get('/unexisting_page/')
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
-    def test_task_detail_pages_authorized_uses_correct_template(self):
+    def test_post_detail_pages_authorized_uses_correct_template(self):
         """URL-адреса используют шаблон posts/post_detail.html."""
         response = self.authorized_client.\
-            get(reverse('posts:post_detail', kwargs={'post_id': 5}))
+            get(reverse('posts:post_detail', kwargs={'post_id': self.post.id}))
         self.assertTemplateUsed(response, 'posts/post_detail.html')
 
     def test_post_edit(self):
-        """post_edit возвращает статус 200"""
+        """Страница /post_edit от автора поста возвращает статус 200."""
         response = self.author.\
-            get(reverse('posts:post_edit', kwargs={'post_id': 5}))
+            get(reverse('posts:post_edit', kwargs={'post_id': self.post.id}))
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_post_detail_is_auth(self):
+        """Страница /post_detail доступна авторизированому юзеру"""
         response = self.authorized_client.\
-            get(reverse('posts:post_detail', kwargs={'post_id': 5}))
+            get(reverse('posts:post_detail', kwargs={'post_id': self.post.id}))
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_post_detail_no_auth(self):
+        """Страница /post_detail доступна неавторизированому юзеру"""
         response = self.guest_client.\
-            get(reverse('posts:post_detail', kwargs={'post_id': 5}))
+            get(reverse('posts:post_detail', kwargs={'post_id': self.post.id}))
         self.assertEqual(response.status_code, HTTPStatus.OK)
+
+    def test_private_url(self):
+        """Без авторизации приватные URL недоступны."""
+        url_names = (
+            '/admin/',
+            '/create',
+            reverse('posts:post_detail', kwargs={'post_id': self.post.id})
+        )
+        for adress in url_names:
+            with self.subTest():
+                response = self.guest_client.get(adress)
+                self.assertIsNot(response.status_code, HTTPStatus.OK)
+
+    def test_post_edit_no_auth_redirect(self):
+        """Страница /post_edit для анонима производит редирект."""
+        response = self.guest_client.\
+            get(reverse('posts:post_edit', kwargs={'post_id': self.post.id}))
+        self.assertRedirects(response, ('/auth/login/?next=/posts/5/edit/'))
+
+    def test_post_edit_no_auth_redirect(self):
+        """Страница /post_edit для auth_клиента производит редирект."""
+        response = self.authorized_client.\
+            get(reverse('posts:post_edit', kwargs={'post_id': self.post.id}))
+        self.assertRedirects(response, reverse(
+            'posts:post_detail', kwargs={'post_id': self.post.id}))
+
+    def test_post_edit_page_author_uses_correct_template(self):
+        """URL-адрес использует шаблон create_post.html для автора."""
+        response = self.author.\
+            get(reverse('posts:post_edit', kwargs={'post_id': self.post.id}))
+        self.assertTemplateUsed(response, 'posts/create_post.html')
