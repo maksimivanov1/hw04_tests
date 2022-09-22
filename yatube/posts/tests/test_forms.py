@@ -17,7 +17,7 @@ class PostFormTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user = User.objects.create_user(username='auth')
+        cls.user = User.objects.create_user(username='max')
         cls.group = Group.objects.create(
             title='Тестовая группа 1',
             slug='slagtest_1',
@@ -64,11 +64,12 @@ class PostFormTests(TestCase):
             reverse('posts:post_create'),
             data=form_data,
             follow=True
+            
         )
         post = Post.objects.first()
         self.assertRedirects(
             response,
-            reverse('posts:profile', args=(self.user.username,))
+            reverse('posts:profile', kwargs={'username': self.user.username})
         )
         self.assertEqual(
             Post.objects.count(),
@@ -90,8 +91,8 @@ class PostFormTests(TestCase):
             form_data['group'],
             'Группа не совпадает!'
         )
-
         self.assertEqual(response.status_code, HTTPStatus.OK)
+        
 
     def test_edit_post(self):
         """Валидная форма изменяет запись в Post."""

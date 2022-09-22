@@ -59,8 +59,8 @@ def post_create(request):
             post.author = request.user
             post.save()
             return redirect('posts:profile', request.user.username)
-    else:
-        return render(request, 'posts/create_post.html', context)
+    return render(request, 'posts/create_post.html', context)
+    
 
 
 @login_required
