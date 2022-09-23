@@ -41,12 +41,6 @@ class PostTests(TestCase):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
 
-    def context_check(self, post):
-        """Функция проверки атрибутов контекста."""
-        self.assertEqual(post.author, self.post.author)
-        self.assertEqual(post.text, self.post.text)
-        self.assertEqual(post.group, self.post.group)
-
     def test_pages_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон."""
         templates_pages_names = {
@@ -136,9 +130,13 @@ class PostTests(TestCase):
         """Шаблон post_detail сформирован с правильным контекстом."""
         response = (self.authorized_client.get(
             reverse('posts:post_detail', kwargs={
-                'post_id': self.post.id})))
+                'post_id': self.post2.id})))
         first_object = response.context['post']
-        self.context_check(first_object)
+        self.assertEqual(first_object.text,
+                         self.post2.text)
+        self.assertEqual(first_object.author.username,
+                         self.post2.author.username)
+        self.assertEqual(first_object.group.title, self.post2.group.title)
 
 
 class PaginatorViewsTest(TestCase):
