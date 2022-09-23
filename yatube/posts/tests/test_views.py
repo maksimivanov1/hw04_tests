@@ -76,10 +76,14 @@ class PostTests(TestCase):
         response = self.authorized_client.\
             get(reverse('posts:groups',
                         kwargs={'slug': self.post2.group.slug}))
-        first_object = response.context["group"]
-        self.assertIsNotNone(first_object)
-        self.assertEqual(first_object.title, self.post2.group.title)
-        self.assertEqual(first_object.slug, self.post2.group.slug)
+        first_object_group = response.context["group"]
+        first_object_post = response.context["page_obj"][0]
+        self.assertIsNotNone(first_object_post)
+        self.assertIsNotNone(first_object_group)
+        self.assertEqual(first_object_group.title, self.post2.group.title)
+        self.assertEqual(first_object_group.slug, self.post2.group.slug)
+        self.context_check(first_object_post)
+
 
     def test_post_in_another_group(self):
         """Пост не попал в другую группу."""
