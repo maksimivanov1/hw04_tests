@@ -84,7 +84,6 @@ class PostTests(TestCase):
         self.assertEqual(first_object_group.slug, self.post2.group.slug)
         self.context_check(first_object_post)
 
-
     def test_post_in_another_group(self):
         """Пост не попал в другую группу."""
         response = self.authorized_client.get(
